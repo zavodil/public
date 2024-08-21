@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <title>Current Time</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+      .clock {
+        font-size: 48px;
+        font-weight: bold;
+        margin: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Current Time</h1>
+    <div class="clock" id="clock"></div>
+    <script>
+      function updateTime() {
+        const currentTime = new Date();
+        const hours = currentTime.getHours();
+        const minutes = currentTime.getMinutes();
+        const seconds = currentTime.getSeconds();
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById("clock").innerText = timeString;
+      }
+      updateTime();
+      setInterval(updateTime, 1000);
+    </script>
+  </body>
+</html>
