@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <title>Lisbon Time and ASCII Map</title>
+    <style>
+      body {
+        font-family: monospace;
+        background-color: #034692; /* Portugal flag blue */
+      }
+      .container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #F7F7F7;
+        border: 1px solid #CCCCCC;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      .time {
+        font-size: 48px;
+        font-weight: bold;
+        color: #FF0000; /* Portugal flag red */
+      }
+      .map {
+        font-size: 14px;
+        color: #000000;
+      }
+      .map-red {
+        color: #FF0000; /* Portugal flag red */
+      }
+      .map-green {
+        color: #34C759; /* Portugal flag green */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="time" id="lisbon-time">Loading...</h1>
+      <div class="map">
+        <pre>
+___________
+\   _______/
+  \ /       \
+ /   ______  \
+|  |       | |
+|  |  PORTO  | |
+|  |       | |
+ _______/
+  |         |
+  |  Lisbon  |
+  |         |
+  _______/
+  |         |
+  |  ALGARVE  |
+  |         |
+ _______/
+        </pre>
+        <span class="map-red">**</span> represents major cities
+        <span class="map-green">_______</span> represents the coastline
+      </div>
+    </div>
+    <script>
+      const getTime = () => {
+        const now = new Date();
+        const offset = 1; // Lisbon is in the Western European Time (WET) zone, which is UTC+0
+        const lisbonTime = new Date(now.getTime() + offset * 60 * 60 * 1000);
+        const hours = lisbonTime.getHours().toString().padStart(2, "0");
+        const minutes = lisbonTime.getMinutes().toString().padStart(2, "0");
+        const seconds = lisbonTime.getSeconds().toString().padStart(2, "0");
+        document.getElementById("lisbon-time").innerText = `${hours}:${minutes}:${seconds}`;
+      };
+      setInterval(getTime, 1000); // update time every second
+      getTime(); // initial time update
+    </script>
+  </body>
+</html>
