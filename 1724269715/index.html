@@ -1,0 +1,157 @@
+<!-- Stored prompt: 
+title: near staking explorer
+subtitle: show pools where account staked some NEAR tokens 
+
+(fill free to fix wordings)
+
+use bootstrap css
+add a textbox to enter Near account Id
+
+Account ID can contain any of the following:
+- Lowercase characters (a-z)
+- Digits (0-9)
+- Characters (_-) can be used as separators
+- can ends with .near and other similar .domain
+
+add validation for account textbox. 
+
+add a regular button "Submit". enable button only if accountId is valid. do not show extra labels if account is valid 
+
+show account's staking pools on submit button's onclick
+
+access API like:
+1) make get request to "https://api.fastnear.com/v0/account/" + accountId + "/staking",
+2)it returns {"account_id":"name.near","pools":["pool.near","pool2.near"]}. So parse `pools` and display like:
+
+Subtitle with top padding: "Staking pools of {accountId}"
+pool1
+pool2
+... 
+(add html table)
+
+
+add header + footer. 
+
+Footer: add a tiny logo of near protocol https://near.org/_next/static/media/near-icon.2e682d59.svg  before the title. make it dark green, don't break the line
+add a link to https://near.ai and caption "Created by NearAi Agent". 
+
+add header soft pattern with some spacing. add top spacing before footer
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Near Staking Explorer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-image: linear-gradient(to bottom, #f7f7f7, #e7e7e7);
+            padding: 20px;
+            text-align: center;
+        }
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            clear: both;
+        }
+        .footer img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+        .footer a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #ccc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Near Staking Explorer</h1>
+        <p>Explore staking pools for your Near account</p>
+    </header>
+    <div class="container">
+        <form id="staking-form">
+            <div class="form-group">
+                <label for="accountId">Enter your Near account ID:</label>
+                <input type="text" id="accountId" name="accountId" pattern="[a-z0-9-_]+(\.near)?$" required>
+                <small id="accountIdHelp" class="form-text text-muted">Enter a valid Near account ID (e.g., myaccount.near)</small>
+            </div>
+            <button id="submit" type="submit" class="btn btn-primary" disabled>Submit</button>
+        </form>
+        <div id="staking-pools" style="display: none;">
+            <h2 id="pools-header"></h2>
+            <table id="pools-table" class="table">
+                <thead>
+                    <tr>
+                        <th>Staking Pool</th>
+                    </tr>
+                </thead>
+                <tbody id="pools-body"></tbody>
+            </table>
+        </div>
+    </div>
+    <footer class="footer">
+        <img src="https://near.org/_next/static/media/near-icon.2e682d59.svg" alt="Near Protocol logo" style="filter: brightness(0.5);"><span style="color: #333;">Near Staking Explorer</span>
+        <a href="https://near.ai" target="_blank">Created by NearAi Agent</a>
+    </footer>
+    <script>
+        const accountIdInput = document.getElementById('accountId');
+        const submitButton = document.getElementById('submit');
+        const stakingPoolsDiv = document.getElementById('staking-pools');
+        const poolsTable = document.getElementById('pools-table');
+        const poolsBody = document.getElementById('pools-body');
+        
+        accountIdInput.addEventListener('input', () => {
+            if (accountIdInput.patternMismatch) {
+                submitButton.disabled = true;
+            } else {
+                submitButton.disabled = false;
+            }
+        });
+        
+        document.getElementById('staking-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const accountId = accountIdInput.value;
+            fetch(`https://api.fastnear.com/v0/account/${accountId}/staking`)
+                .then(response => response.json())
+                .then(data => {
+                    const pools = data.pools;
+                    stakingPoolsDiv.style.display = 'block';
+                    document.getElementById('pools-header').textContent = `Staking pools of ${accountId}`;
+                    poolsBody.innerHTML = '';
+                    pools.forEach(pool => {
+                        const row = document.createElement('TR');
+                        const cell = document.createElement('TD');
+                        cell.textContent = pool;
+                        row.appendChild(cell);
+                        poolsBody.appendChild(row);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>
