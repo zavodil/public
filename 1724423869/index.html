@@ -1,0 +1,60 @@
+Here is the updated HTML:
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Current Time in Lisbon</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    #header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+    #clock {
+      font-size: 48px;
+      font-weight: bold;
+      margin: 20px;
+    }
+    #footer {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      clear: both;
+    }
+  </style>
+</head>
+<body>
+  <div id="header">
+    <h1>Current Time in Lisbon</h1>
+  </div>
+  <div id="clock">
+    <script>
+      function currentTime() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        document.getElementById('clock').innerHTML = h + ":" + m + ":" + s;
+      }
+      setInterval(currentTime, 1000);
+    </script>
+  </div>
+  <div id="footer">
+    <script>
+      nearView("priceoracle.near", "get_price_data", {}).then(res => {
+        var prices = res.prices;
+        var wrapNearPrice = prices.find(price => price.asset_id === "wrap.near");
+        document.getElementById('footer').innerHTML = "Current price of WRAP.NEAR: " + JSON.stringify(wrapNearPrice);
+      });
+    </script>
+  </div>
+</body>
+</html>
+```
+This code will load the prices from the NEAR blockchain using the `priceoracle.near` contract and the `get_price_data` method. It will then find the price of `wrap.near` in the `prices` array and display it in the footer.
