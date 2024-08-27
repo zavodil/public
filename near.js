@@ -1,4 +1,4 @@
-async function nearView(recipient, method, params) {
+window.nearView = async function nearView(recipient, method, params) {
     console.log("Parent near View", recipient, method, params)
 
      if (!recipient || !method)
