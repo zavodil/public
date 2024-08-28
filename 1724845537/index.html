@@ -1,0 +1,167 @@
+<html>
+<head>
+<title>Web3 Guestbook Example</title>
+<style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+      }
+      #guestbook-container {
+        width: 80%;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      #messages {
+        padding: 20px;
+      }
+      #message {
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+      #message:nth-child(even) {
+        background-color: #f7f7f7;
+      }
+      #message:last-child {
+        border-bottom: none;
+      }
+      #write-message {
+        margin-top: 20px;
+        text-align: center;
+      }
+      #write-message textarea {
+        width: 80%;
+        height: 150px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      #write-message button {
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 80%;
+      }
+      #write-message button:hover {
+        background-color: #3e8e41;
+      }
+      #pagination {
+        margin-top: 20px;
+        text-align: center;
+      }
+      #pagination button {
+        background-color: #4CAF50;
+        color: #fff;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 0 2px;
+      }
+      #pagination button:hover {
+        background-color: #3e8e41;
+      }
+      footer {
+        padding: 10px;
+        background-image: linear-gradient(to bottom, #f7f7f7, #e7e7e7);
+        background-size: 100% 10px;
+        background-position: 0% 100%;
+        background-repeat: repeat-x;
+        text-align: center;
+      }
+    </style>
+<script src='https://cdn.jsdelivr.net/npm/near-api-js@0.45.1/dist/near-api-js.min.js'></script><script src='https://zavodil.github.io/public/near.js'></script></head>
+<body id="5ae195ce5d6144e790db898437694484">
+<div id="guestbook-container">
+<header id="0bef6edceb1f4ccfa7b56b7e9d9af7a2">
+<h1 id="005b4024d3204aea8ee598eeb1424c11">NEAR Guest Book</h1>
+<div id="b25b5788e3e040959b089fe2a8145f5e"></div>
+</header>
+<h2 id="267e779a65bc4513b5257473a0e222dd">A Web3 Guestbook Example</h2>
+<div id="d2efe3367e86452da5bc8704e2806dbc">
+<a href="https://docs.near.org/tutorials/examples/guest-book" id="612105c72ed04bdd9b4f5f0930ff9a02" style="padding-bottom: 20px;">Learn more about this example</a>
+</div>
+<div id="72c10ec7d29e4accaeeb142cb2a71bdf" style="text-align: center; display: flex; flex-direction: column; justify-content: center; padding-top: 20px;">
+<div id="eff6b9e7261a47b6a4651b2431f17256" style="text-align: center;">
+<form id="write-message">
+<textarea id="message-text" style="width: 80%; height: 150px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;"></textarea>
+<button onclick="addMessage()">Write a message</button>
+</form>
+</div>
+</div>
+<script>
+  function addMessage() {
+    var messageText = document.getElementById('message-text').value;
+    nearCall("guestbook.near-examples.testnet", "add_message", {text: messageText}, 30, 0).then(res => console.log(res));
+  }
+</script>
+<div id="messages">
+<h2 id="65710a0929134951b28bb1e999c91977">Messages</h2>
+<div id="messages-list">
+<!-- messages will be displayed here -->
+</div>
+<style>
+    #messages-list > div:nth-child(odd) {
+      background-color: #f0f0f0;
+    }
+  </style>
+</div>
+<script>
+  var currentPage = 1;
+  var pageSize = 10;
+  var messages = [];
+  
+  function renderMessages(messages) {
+    var messagesHTML = '';
+    messages.forEach(message => {
+      messagesHTML += '<div id="message" style="background-color: ' + (messages.indexOf(message) % 2 === 0 ? '#f7f7f7' : '#fff') + '">From: ' + message.sender + '<br>Message: ' + message.text + '</div>';
+    });
+    document.getElementById('messages-list').innerHTML = messagesHTML;
+  }
+  
+  function pagination() {
+    var paginationHTML = '';
+    if (messages.length > 0) {
+      paginationHTML += '<p>Page ' + currentPage + ' of ' + Math.ceil(messages.length / pageSize) + '</p>';
+      for (var i = 1; i <= Math.ceil(messages.length / pageSize); i++) {
+        paginationHTML += '<button onclick="loadPage(' + i + ')">' + i + '</button>';
+      }
+    } else {
+      paginationHTML = 'No messages yet.';
+    }
+    document.getElementById('pagination').innerHTML = paginationHTML;
+  }
+  
+  function loadPage(page) {
+    currentPage = page;
+    nearView("guestbook.near-examples.testnet", "get_messages", {"limit": "500"}).then(res => {
+      messages = res.reverse();
+      var startIndex = (page - 1) * pageSize;
+      var endIndex = startIndex + pageSize;
+      var pageMessages = messages.slice(startIndex, endIndex);
+      renderMessages(pageMessages);
+      pagination();
+    });
+  }
+  
+  loadPage(1);
+</script>
+</div>
+<div id="pagination">
+<div id="pagination" style="display: flex; justify-content: space-between;">
+<span>Messages pagination</span>
+<button style="padding: 5px;">Prev</button>
+<button style="padding: 5px;">Next</button>
+</div>
+</div>
+<footer id="3ff7cf3f30974facacb1c64d6cd4876f">
+<a href="https://near.ai" id="55138d82a33448649a22e37ae4988ab5">Created by NEAR AI</a>
+</footer>
+</body>
+</html>
