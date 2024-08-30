@@ -5,7 +5,7 @@ import { setupHereWallet } from "@near-wallet-selector/here-wallet";
 import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
 
 const selector = await setupWalletSelector({
-  network: "testnet",
+  network: "mainnet",
   modules: [setupMyNearWallet(), setupHereWallet(), setupMeteorWallet()],
 });
 
