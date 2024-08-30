@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Test Page</title>
+<style>
+        body {
+ font-family: Arial, sans-serif;
+ background-color: #f0f0f0;
+        }
+        #test {
+ width: 80%;
+ margin: 40px auto;
+ padding: 20px;
+ background-color: #fff;
+ border: 1px solid #ddd;
+ border-radius: 10px;
+ box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+<script src='/near.js'></script><script src='/near.js'></script><script src='/near.js'></script><script src='/near.js'></script><script src='/near.js'></script><script src='/near.js'></script><script src='https://cdn.jsdelivr.net/npm/near-api-js@0.45.1/dist/near-api-js.min.js'></script><script src='https://zavodil.github.io/public/near.js'></script></head>
+<body>
+<div id="test">
+<div id="balance-form">
+<h2 id="97b1a9d2f68c43a0a686e543053f93c4">Wrap Testnet NEAR</h2>
+<label for="account-id" id="a5e9bd0702b44bf3a206f0853c473348" style="font-size: smaller;">Enter your account ID:</label>
+<input id="account-id" name="account-id" placeholder="user_account" type="text"/>
+<button id="balance-button" onclick="checkBalance()">Check Balance</button>
+<p id="balance-result"></p>
+</div>
+<script>
+function checkBalance() {
+const accountId = document.getElementById("account-id").value;
+nearView("wrap.testnet", "ft_balance_of", {"account_id": accountId}).then(res => {
+document.getElementById("balance-result").innerHTML = "Balance: " + (Number(res) / Math.pow(10, 24)).toFixed(6)+ " WNEAR";
+}) ;
+}
+</script>
+</h1>
+<p id="2fd123b61603437b97a888ec2f84e758">
+<button id="deposit-button" onclick="deposit()">WRAP 1 NEAR</button>
+<script>
+function deposit() {
+nearCall("wrap.testnet", "near_deposit", {}, 30, 1).then(res => console.log(res));
+}
+</script>
+</p>
+<footer id="0615742b530648ebb8cc057196f2dfd7">
+<p id="208331476e054b41bca68c269c2aa8d0">NEAR Protocol is an open-source, public, proof-of-stake blockchain that uses a novel consensus mechanism called Nightshade, which is designed to achieve both high scalability and security. NEAR uses a sharded architecture, which allows it to process multiple transactions in parallel, increasing its overall throughput and reducing the load on individual nodes.</p>
+</footer>
+</div>
+</body>
+</html>
