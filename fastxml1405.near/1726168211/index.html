@@ -1,0 +1,342 @@
+<html id="da9bac9d75d64c5b9d3e4e3999742e14">
+<head id="3f5e4f4c71a04c74a5f75d235414d5a3">
+<title id="6f4e65f6d32444a4bf0e5f393f2544b4">Ref Finance Tokens</title>
+<style id="25fd0c1e6c6b45a8a4e9d55a9f84a5b5">
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #container {
+      width: 80%;
+      margin: 40px auto;
+      text-align: center;
+    }
+    #tokens {
+      background-color: #f0f0f0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: left;
+    }
+    #footer {
+      font-size: 14px;
+      color: #666;
+      text-align: center;
+      margin-top: 20px;
+    }
+    .token {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .token table {
+      border-collapse: collapse;
+    }
+    .token th, .token td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
+    .pagination {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .pagination button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #4CAF50;
+      color: #fff;
+      cursor: pointer;
+    }
+    .pagination button:hover {
+      background-color: #3e8e41;
+    }
+  </style>
+<script src='https://cdn.jsdelivr.net/npm/near-api-js@0.45.1/dist/near-api-js.min.js'></script><link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@near-wallet-selector/modal-ui-js@8.7.2/styles.css'></head>
+<body id="95a3c9b7f5144e4c90c8a46c4c1946c9">
+<div id="container">
+<h1 id="5d35f46f6f9742a4a962d5549f3c78f4">Ref Finance Tokens</h1>
+<div id="tokens">
+<h2 id="71f7d3f5f5344a59ae7d5b7f9b64c7d6">Whitelisted Tokens</h2>
+<div id="token-list">
+<script id="e427a51f8f6544f1a4f3c2851f59b34c">
+        let currentPage = 1;
+        let tokensPerPage = 10;
+        nearView("v2.ref-finance.near", "get_whitelisted_tokens", {}).then(res => {
+          const tokenList = document.getElementById('token-list');
+          const pagination = document.createElement('div');
+          pagination.classList.add('pagination');
+          tokenList.appendChild(pagination);
+          const prevButton = document.createElement('button');
+          prevButton.textContent = 'Previous';
+          prevButton.onclick = () => {
+            if (currentPage > 1) {
+              currentPage--;
+              renderTokens(res, tokenList, pagination);
+            }
+          };
+          pagination.appendChild(prevButton);
+          const nextButton = document.createElement('button');
+          nextButton.textContent = 'Next';
+          nextButton.onclick = () => {
+            if (currentPage < Math.ceil(res.length / tokensPerPage)) {
+              currentPage++;
+              renderTokens(res, tokenList, pagination);
+            }
+          };
+          pagination.appendChild(nextButton);
+          renderTokens(res, tokenList, pagination);
+        });
+        function renderTokens(tokens, tokenList, pagination) {
+          tokenList.innerHTML = '';
+          const start = (currentPage - 1) * tokensPerPage;
+          const end = start + tokensPerPage;
+          tokens.slice(start, end).forEach(contractId => {
+            const tokenDiv = document.createElement('div');
+            tokenDiv.classList.add('token');
+            const tokenHtml = `
+              <h3 id="${contractId}">${contractId}</h3>
+              <table id="${contractId}-metadata">
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody id="${contractId}-metadata-tbody">
+                </tbody>
+              </table>
+            `;
+            tokenDiv.innerHTML = tokenHtml;
+            tokenList.appendChild(tokenDiv);
+            nearView(contractId, 'ft_metadata', {}).then(metadata => {
+              const tbody = document.getElementById(`${contractId}-metadata-tbody`);
+              Object.keys(metadata).forEach(key => {
+                const row = document.createElement('tr');
+                const keyCell = document.createElement('td');
+                keyCell.textContent = key;
+                row.appendChild(keyCell);
+                const valueCell = document.createElement('td');
+                if (key === 'icon' && metadata[key] !== null) {
+                  const iconImg = document.createElement('img');
+                  iconImg.src = metadata[key];
+                  iconImg.alt = "Token icon";
+                  iconImg.width = 30;
+                  iconImg.height = 30;
+                  valueCell.appendChild(iconImg);
+                } else if (key === 'icon' && metadata[key] === null) {
+                  valueCell.textContent = "No icon";
+                } else {
+                  valueCell.textContent = metadata[key];
+                }
+                row.appendChild(valueCell);
+                tbody.appendChild(row);
+              });
+            });
+          });
+          pagination.innerHTML = '';
+          const prevButton = document.createElement('button');
+          prevButton.textContent = 'Previous';
+          prevButton.onclick = () => {
+            if (currentPage > 1) {
+              currentPage--;
+              renderTokens(tokens, tokenList, pagination);
+            }
+          };
+          pagination.appendChild(prevButton);
+          const nextButton = document.createElement('button');
+          nextButton.textContent = 'Next';
+          nextButton.onclick = () => {
+            if (currentPage < Math.ceil(tokens.length / tokensPerPage)) {
+              currentPage++;
+              renderTokens(tokens, tokenList, pagination);
+            }
+          };
+          pagination.appendChild(nextButton);
+        }
+      </script>
+</div>
+</div>
+<div id="footer">
+Created by <a href="https://near.ai" id="7f77479f5eaf43e7a6934560319406c6">NEAR AI</a>
+</div>
+</div>
+</body>
+<script async crossorigin="anonymous"
+        src="https://ga.jspm.io/npm:es-module-shims@1.10.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+        "@near-wallet-selector/core": "https://ga.jspm.io/npm:@near-wallet-selector/core@8.9.10/index.js",
+        "@near-wallet-selector/here-wallet": "https://ga.jspm.io/npm:@near-wallet-selector/here-wallet@8.9.10/index.js",
+        "@near-wallet-selector/meteor-wallet": "https://ga.jspm.io/npm:@near-wallet-selector/meteor-wallet@8.9.10/index.js",
+        "@near-wallet-selector/modal-ui-js": "https://ga.jspm.io/npm:@near-wallet-selector/modal-ui-js@8.9.10/index.js",
+        "@near-wallet-selector/my-near-wallet": "https://ga.jspm.io/npm:@near-wallet-selector/my-near-wallet@8.9.10/index.js"
+    },
+        "scopes": {
+        "https://ga.jspm.io/": {
+        "@here-wallet/core": "https://ga.jspm.io/npm:@here-wallet/core@1.6.6/build/index.js",
+        "@meteorwallet/sdk": "https://ga.jspm.io/npm:@meteorwallet/sdk@1.0.9/dist/meteor-sdk/src/index.js",
+        "@near-js/accounts": "https://ga.jspm.io/npm:@near-js/accounts@0.1.4/lib/index.js",
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@0.0.5/lib/index.js",
+        "@near-js/keystores": "https://ga.jspm.io/npm:@near-js/keystores@0.0.5/lib/index.js",
+        "@near-js/keystores-browser": "https://ga.jspm.io/npm:@near-js/keystores-browser@0.0.5/lib/index.js",
+        "@near-js/providers": "https://ga.jspm.io/npm:@near-js/providers@0.0.7/lib/index.js",
+        "@near-js/signers": "https://ga.jspm.io/npm:@near-js/signers@0.0.5/lib/index.js",
+        "@near-js/transactions": "https://ga.jspm.io/npm:@near-js/transactions@0.2.1/lib/index.js",
+        "@near-js/types": "https://ga.jspm.io/npm:@near-js/types@0.0.4/lib/index.js",
+        "@near-js/utils": "https://ga.jspm.io/npm:@near-js/utils@0.0.4/lib/index.js",
+        "@near-js/wallet-account": "https://ga.jspm.io/npm:@near-js/wallet-account@0.0.7/lib/index.js",
+        "@near-wallet-selector/wallet-utils": "https://ga.jspm.io/npm:@near-wallet-selector/wallet-utils@8.9.10/index.js",
+        "@noble/curves/ed25519": "https://ga.jspm.io/npm:@noble/curves@1.2.0/ed25519.js",
+        "@noble/hashes/crypto": "https://ga.jspm.io/npm:@noble/hashes@1.3.3/crypto.js",
+        "@noble/hashes/sha256": "https://ga.jspm.io/npm:@noble/hashes@1.3.3/sha256.js",
+        "@noble/hashes/sha512": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/sha512.js",
+        "@noble/hashes/utils": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/utils.js",
+        "ajv": "https://ga.jspm.io/npm:ajv@8.11.2/dist/dev.ajv.js",
+        "ajv-formats": "https://ga.jspm.io/npm:ajv-formats@2.1.1/dist/index.js",
+        "ajv/dist/compile/codegen": "https://ga.jspm.io/npm:ajv@8.11.2/dist/compile/codegen/index.js",
+        "base-x": "https://ga.jspm.io/npm:base-x@2.0.6/index.js",
+        "bn.js": "https://ga.jspm.io/npm:bn.js@5.2.1/lib/bn.js",
+        "borsh": "https://ga.jspm.io/npm:borsh@0.7.0/lib/index.js",
+        "bs58": "https://ga.jspm.io/npm:bs58@4.0.0/index.js",
+        "buffer": "https://ga.jspm.io/npm:@jspm/core@2.0.1/nodelibs/browser/buffer.js",
+        "capability": "https://ga.jspm.io/npm:capability@0.2.5/index.js",
+        "capability/es5": "https://ga.jspm.io/npm:capability@0.2.5/es5.js",
+        "charenc": "https://ga.jspm.io/npm:charenc@0.0.2/charenc.js",
+        "copy-to-clipboard": "https://ga.jspm.io/npm:copy-to-clipboard@3.3.3/index.js",
+        "crypt": "https://ga.jspm.io/npm:crypt@0.0.2/crypt.js",
+        "crypto": "https://ga.jspm.io/npm:@jspm/core@2.0.1/nodelibs/browser/crypto.js",
+        "decode-uri-component": "https://ga.jspm.io/npm:decode-uri-component@0.2.2/index.js",
+        "depd": "https://ga.jspm.io/npm:depd@2.0.0/lib/browser/index.js",
+        "dijkstrajs": "https://ga.jspm.io/npm:dijkstrajs@1.0.3/dijkstra.js",
+        "encode-utf8": "https://ga.jspm.io/npm:encode-utf8@1.0.3/index.js",
+        "error-polyfill": "https://ga.jspm.io/npm:error-polyfill@0.1.3/index.js",
+        "events": "https://ga.jspm.io/npm:events@3.3.0/events.js",
+        "fast-deep-equal": "https://ga.jspm.io/npm:fast-deep-equal@3.1.3/index.js",
+        "filter-obj": "https://ga.jspm.io/npm:filter-obj@1.1.0/index.js",
+        "http": "https://ga.jspm.io/npm:@jspm/core@2.0.1/nodelibs/browser/http.js",
+        "http-errors": "https://ga.jspm.io/npm:http-errors@1.7.2/index.js",
+        "https": "https://ga.jspm.io/npm:@jspm/core@2.0.1/nodelibs/browser/https.js",
+        "inherits": "https://ga.jspm.io/npm:inherits@2.0.3/inherits_browser.js",
+        "js-sha256": "https://ga.jspm.io/npm:js-sha256@0.9.0/src/sha256.js",
+        "json-schema-traverse": "https://ga.jspm.io/npm:json-schema-traverse@1.0.0/index.js",
+        "lru_map": "https://ga.jspm.io/npm:lru_map@0.4.1/dist/lru.js",
+        "mustache": "https://ga.jspm.io/npm:mustache@4.0.0/mustache.js",
+        "nanoid": "https://ga.jspm.io/npm:nanoid@3.3.6/index.browser.js",
+        "near-abi": "https://ga.jspm.io/npm:near-abi@0.1.1/lib/index.js",
+        "near-api-js": "https://ga.jspm.io/npm:near-api-js@2.1.4/lib/browser-index.js",
+        "near-api-js/lib/providers": "https://ga.jspm.io/npm:near-api-js@3.0.4/lib/providers/index.js",
+        "near-api-js/lib/utils": "https://ga.jspm.io/npm:near-api-js@3.0.4/lib/utils/index.js",
+        "near-api-js/lib/utils/key_pair": "https://ga.jspm.io/npm:near-api-js@3.0.4/lib/utils/key_pair.js",
+        "near-api-js/lib/utils/serialize": "https://ga.jspm.io/npm:near-api-js@3.0.4/lib/utils/serialize.js",
+        "node-fetch": "https://ga.jspm.io/npm:node-fetch@2.6.7/browser.js",
+        "o3": "https://ga.jspm.io/npm:o3@1.0.3/index.js",
+        "process": "https://ga.jspm.io/npm:@jspm/core@2.0.1/nodelibs/browser/process.js",
+        "qrcode": "https://ga.jspm.io/npm:qrcode@1.5.3/lib/browser.js",
+        "query-string": "https://ga.jspm.io/npm:query-string@7.1.3/index.js",
+        "randombytes": "https://ga.jspm.io/npm:randombytes@2.1.0/browser.js",
+        "rxjs": "https://ga.jspm.io/npm:rxjs@7.8.1/dist/esm5/index.js",
+        "safe-buffer": "https://ga.jspm.io/npm:safe-buffer@5.2.1/index.js",
+        "setprototypeof": "https://ga.jspm.io/npm:setprototypeof@1.1.1/index.js",
+        "sha1": "https://ga.jspm.io/npm:sha1@1.1.1/sha1.js",
+        "split-on-first": "https://ga.jspm.io/npm:split-on-first@1.1.0/index.js",
+        "statuses": "https://ga.jspm.io/npm:statuses@1.5.0/dev.index.js",
+        "strict-uri-encode": "https://ga.jspm.io/npm:strict-uri-encode@2.0.0/index.js",
+        "text-encoding-utf-8": "https://ga.jspm.io/npm:text-encoding-utf-8@1.0.2/lib/encoding.lib.js",
+        "toggle-selection": "https://ga.jspm.io/npm:toggle-selection@1.0.6/index.js",
+        "toidentifier": "https://ga.jspm.io/npm:toidentifier@1.0.0/index.js",
+        "tslib": "https://ga.jspm.io/npm:tslib@2.7.0/tslib.es6.mjs",
+        "tweetnacl": "https://ga.jspm.io/npm:tweetnacl@1.0.3/nacl-fast.js",
+        "u3": "https://ga.jspm.io/npm:u3@0.1.1/index.js",
+        "uri-js": "https://ga.jspm.io/npm:uri-js@4.4.1/dist/es5/uri.all.js",
+        "uuid4": "https://ga.jspm.io/npm:uuid4@2.0.3/browser.mjs"
+    },
+        "https://ga.jspm.io/npm:@here-wallet/core@1.6.6/": {
+        "near-api-js": "https://ga.jspm.io/npm:near-api-js@3.0.4/lib/browser-index.js"
+    },
+        "https://ga.jspm.io/npm:@meteorwallet/sdk@1.0.9/": {
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js",
+        "@near-js/transactions": "https://ga.jspm.io/npm:@near-js/transactions@1.1.2/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/accounts@1.0.4/": {
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js",
+        "@near-js/providers": "https://ga.jspm.io/npm:@near-js/providers@0.1.1/lib/index.js",
+        "@near-js/signers": "https://ga.jspm.io/npm:@near-js/signers@0.1.1/lib/index.js",
+        "@near-js/transactions": "https://ga.jspm.io/npm:@near-js/transactions@1.1.2/lib/index.js",
+        "@near-js/utils": "https://ga.jspm.io/npm:@near-js/utils@0.1.0/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/": {
+        "@near-js/utils": "https://ga.jspm.io/npm:@near-js/utils@0.1.0/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/_/LX1h3mee.js": {
+        "@noble/curves/ed25519": "https://ga.jspm.io/npm:@noble/curves@1.2.0/esm/ed25519.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/_/LoRIA3Ec.js": {
+        "@noble/curves/ed25519": "https://ga.jspm.io/npm:@noble/curves@1.2.0/esm/ed25519.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/keystores-browser@0.0.9/": {
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js",
+        "@near-js/keystores": "https://ga.jspm.io/npm:@near-js/keystores@0.0.9/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/keystores@0.0.9/": {
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/providers@0.1.1/": {
+        "@near-js/transactions": "https://ga.jspm.io/npm:@near-js/transactions@1.1.2/lib/index.js",
+        "@near-js/utils": "https://ga.jspm.io/npm:@near-js/utils@0.1.0/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/signers@0.1.1/": {
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js",
+        "@near-js/keystores": "https://ga.jspm.io/npm:@near-js/keystores@0.0.9/lib/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/transactions@1.1.2/": {
+        "borsh": "https://ga.jspm.io/npm:borsh@1.0.0/lib/cjs/index.js"
+    },
+        "https://ga.jspm.io/npm:@near-js/wallet-account@1.1.1/": {
+        "@near-js/accounts": "https://ga.jspm.io/npm:@near-js/accounts@1.0.4/lib/index.js",
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js",
+        "@near-js/transactions": "https://ga.jspm.io/npm:@near-js/transactions@1.1.2/lib/index.js",
+        "@near-js/utils": "https://ga.jspm.io/npm:@near-js/utils@0.1.0/lib/index.js",
+        "borsh": "https://ga.jspm.io/npm:borsh@1.0.0/lib/cjs/index.js"
+    },
+        "https://ga.jspm.io/npm:@noble/curves@1.2.0/esm/ed25519.js": {
+        "@noble/hashes/sha512": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/sha512.js",
+        "@noble/hashes/utils": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/utils.js"
+    },
+        "https://ga.jspm.io/npm:@noble/hashes@1.3.2/": {
+        "@noble/hashes/crypto": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/crypto.js"
+    },
+        "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/_sha2.js": {
+        "@noble/hashes/crypto": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/crypto.js"
+    },
+        "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/sha512.js": {
+        "@noble/hashes/crypto": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/crypto.js"
+    },
+        "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/utils.js": {
+        "@noble/hashes/crypto": "https://ga.jspm.io/npm:@noble/hashes@1.3.2/esm/crypto.js"
+    },
+        "https://ga.jspm.io/npm:http-errors@1.7.2/": {
+        "depd": "https://ga.jspm.io/npm:depd@1.1.2/lib/browser/index.js"
+    },
+        "https://ga.jspm.io/npm:near-api-js@3.0.4/": {
+        "@near-js/accounts": "https://ga.jspm.io/npm:@near-js/accounts@1.0.4/lib/index.js",
+        "@near-js/crypto": "https://ga.jspm.io/npm:@near-js/crypto@1.2.1/lib/index.js",
+        "@near-js/keystores": "https://ga.jspm.io/npm:@near-js/keystores@0.0.9/lib/index.js",
+        "@near-js/keystores-browser": "https://ga.jspm.io/npm:@near-js/keystores-browser@0.0.9/lib/index.js",
+        "@near-js/providers": "https://ga.jspm.io/npm:@near-js/providers@0.1.1/lib/index.js",
+        "@near-js/signers": "https://ga.jspm.io/npm:@near-js/signers@0.1.1/lib/index.js",
+        "@near-js/transactions": "https://ga.jspm.io/npm:@near-js/transactions@1.1.2/lib/index.js",
+        "@near-js/utils": "https://ga.jspm.io/npm:@near-js/utils@0.1.0/lib/index.js",
+        "@near-js/wallet-account": "https://ga.jspm.io/npm:@near-js/wallet-account@1.1.1/lib/index.js",
+        "borsh": "https://ga.jspm.io/npm:borsh@1.0.0/lib/cjs/index.js"
+    }
+    }
+    }
+</script>
+<script src='https://zavodil.github.io/public/ws.js' type="module"></script>
+<script src='https://zavodil.github.io/public/near.js' type="application/javascript"></script></html>
